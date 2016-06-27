@@ -22,6 +22,13 @@
   ],
   "author": "Kevin Huang <huang.kev@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevhuang/redux-async-action.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kevhuang/redux-async-action/issues"
+  },
   "devDependencies": {
     "babel-cli": "^6.10.1",
     "babel-eslint": "^6.1.0",
