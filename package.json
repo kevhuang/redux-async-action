@@ -30,23 +30,23 @@
     "url": "https://github.com/kevhuang/redux-async-action/issues"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
+    "babel-cli": "^6.24.0",
     "babel-eslint": "^7.1.1",
-    "babel-plugin-transform-es2015-arrow-functions": "^6.8.0",
-    "babel-plugin-transform-es2015-destructuring": "^6.19.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
-    "babel-plugin-transform-es2015-parameters": "^6.21.0",
-    "babel-plugin-transform-es2015-spread": "^6.8.0",
-    "babel-register": "^6.18.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-es2015-parameters": "^6.23.0",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
+    "babel-register": "^6.24.0",
     "chai": "^3.5.0",
-    "debug": "^2.6.0",
-    "eslint": "^3.12.2",
+    "debug": "^2.6.3",
+    "eslint": "^3.17.1",
     "mocha": "^3.2.0",
-    "rimraf": "^2.5.4",
+    "rimraf": "^2.6.1",
     "sinon": "^1.17.7"
   },
   "dependencies": {
-    "flux-standard-action": "^1.0.0",
+    "flux-standard-action": "^1.2.0",
     "lodash": "^4.17.4"
   }
 }
