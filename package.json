@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "babel src --out-dir lib",
-    "lint": "eslint src",
+    "lint": "eslint ./src ./test",
     "test": "mocha --compilers js:babel-register",
     "prepublish": "npm run clean && npm run test && npm run build"
   },
@@ -42,13 +42,15 @@
     "babel-plugin-transform-es2015-template-literals": "^6.22.0",
     "babel-register": "^6.24.1",
     "chai": "^3.5.0",
-    "debug": "^2.6.3",
     "eslint": "^4.3.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
     "mocha": "^3.2.0",
     "rimraf": "^2.6.1",
     "sinon": "^1.17.7"
   },
   "dependencies": {
+    "debug": "2.6.8",
     "flux-standard-action": "1.2.0",
     "lodash": "4.17.4"
   }

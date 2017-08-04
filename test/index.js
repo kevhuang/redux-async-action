@@ -1,25 +1,26 @@
-import chai from 'chai';
+/* eslint-disable no-unused-expressions */
+import { expect } from 'chai';
 import sinon from 'sinon';
 import { isFSA } from 'flux-standard-action';
-import { asyncActionCreator, asyncActionMiddleware } from '../src';
+import asyncActionCreator from '../src/asyncActionCreator';
+import asyncActionMiddleware from '../src/asyncActionMiddleware';
 
 let dispatchedPayloads = [];
 
-const expect = chai.expect,
-  dispatch = payload => {
-    dispatchedPayloads.push(payload);
-  },
-  actionType = 'GET_SOME',
-  payload = {message: 'Got some'},
-  successfulPayloadCreator = () => new Promise(resolve => {
-    setTimeout(resolve.bind(this, payload), 100);
-  }),
-  errorMessage = 'Oops',
-  errorPayloadCreator = () => new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject(new Error(errorMessage));
-    }, 100);
-  });
+const dispatch = (payload) => {
+  dispatchedPayloads.push(payload);
+};
+const actionType = 'GET_SOME';
+const payload = { message: 'Got some' };
+const successfulPayloadCreator = () => new Promise((resolve) => {
+  setTimeout(resolve.bind(this, payload), 100);
+});
+const errorMessage = 'Oops';
+const errorPayloadCreator = () => new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject(new Error(errorMessage));
+  }, 100);
+});
 
 beforeEach((done) => {
   dispatchedPayloads = [];
@@ -57,15 +58,15 @@ describe('asyncActionCreator', () => {
     expect(callActionCreatorWith(dispatch, actionType, 'function')).to.throw(TypeError, throwMessage);
   });
 
-  it('dispatches a __START action', () => {
-    return asyncActionCreator(dispatch, actionType, successfulPayloadCreator)
+  it('dispatches a __START action', () => (
+    asyncActionCreator(dispatch, actionType, successfulPayloadCreator)
       .then(() => {
         expect(dispatchedPayloads[0].type).to.equal('GET_SOME__START');
-      });
-  });
+      })
+  ));
 
-  it('dispatches the main action in FSA format for a successful payload creator', () => {
-    return asyncActionCreator(dispatch, actionType, successfulPayloadCreator)
+  it('dispatches the main action in FSA format for a successful payload creator', () => (
+    asyncActionCreator(dispatch, actionType, successfulPayloadCreator)
       .then(() => {
         expect(dispatchedPayloads).to.have.lengthOf(2);
         const mainAction = dispatchedPayloads[1];
@@ -73,10 +74,10 @@ describe('asyncActionCreator', () => {
         expect(mainAction.type).to.equal(actionType);
         expect(mainAction.payload).to.deep.equal(payload);
       })
-  });
+  ));
 
   it('dispatches the main action in FSA format with metadata', () => {
-    const meta = {me: 'awesome'};
+    const meta = { me: 'awesome' };
     return asyncActionCreator(dispatch, actionType, successfulPayloadCreator, meta)
       .then(() => {
         const mainAction = dispatchedPayloads[1];
@@ -85,23 +86,23 @@ describe('asyncActionCreator', () => {
       });
   });
 
-  it('calls the provided callback with the successful payload result', () => {
-    return asyncActionCreator(dispatch, actionType, successfulPayloadCreator, null, (err, result) => {
+  it('calls the provided callback with the successful payload result', () => (
+    asyncActionCreator(dispatch, actionType, successfulPayloadCreator, null, (err, result) => {
       expect(err).to.be.null;
       expect(result).to.deep.equal(payload);
-    });
-  });
+    })
+  ));
 
-  it('calls the provided callback when the payload creator throws', () => {
-    return asyncActionCreator(dispatch, actionType, errorPayloadCreator, null, (err, result) => {
+  it('calls the provided callback when the payload creator throws', () => (
+    asyncActionCreator(dispatch, actionType, errorPayloadCreator, null, (err, result) => {
       expect(result).to.be.null;
       expect(err).to.be.an.instanceOf(Error);
       expect(err.message).to.be.equal(errorMessage);
-    });
-  });
+    })
+  ));
 
-  it('dispatches a __ERROR action in FSA format when the payload creator throws', () => {
-    return asyncActionCreator(dispatch, actionType, errorPayloadCreator)
+  it('dispatches a __ERROR action in FSA format when the payload creator throws', () => (
+    asyncActionCreator(dispatch, actionType, errorPayloadCreator)
       .then(() => {
         expect(dispatchedPayloads).to.have.lengthOf(2);
         const errorAction = dispatchedPayloads[1];
@@ -110,28 +111,28 @@ describe('asyncActionCreator', () => {
         expect(errorAction.error).to.be.true;
         expect(errorAction.payload).to.be.an.instanceOf(Error);
         expect(errorAction.payload.message).to.be.equal(errorMessage);
-      });
-  });
+      })
+  ));
 });
 
 describe('asyncActionMiddleware', () => {
-  let nextMiddlewareSpy = sinon.spy();
+  const nextMiddlewareSpy = sinon.spy();
   const createFakeStore = () => ({
-      getState() {
-        // empty state
-        return {};
-      },
-      dispatch
-    }),
-    dispatchWithAction = action => {
-      const dispatch = asyncActionMiddleware(createFakeStore())(nextMiddlewareSpy);
-      return dispatch(action);
+    getState() {
+      // empty state
+      return {};
     },
-    fsaAction = {
-      type: actionType,
-      payload: successfulPayloadCreator
-    },
-    actionCreator = () => fsaAction;
+    dispatch,
+  });
+  const dispatchWithAction = (action) => {
+    const dispatcher = asyncActionMiddleware(createFakeStore())(nextMiddlewareSpy);
+    return dispatcher(action);
+  };
+  const fsaAction = {
+    type: actionType,
+    payload: successfulPayloadCreator,
+  };
+  const actionCreator = () => fsaAction;
 
   beforeEach(() => {
     nextMiddlewareSpy.reset();
@@ -141,20 +142,20 @@ describe('asyncActionMiddleware', () => {
     expect(asyncActionMiddleware).to.be.a('function');
   });
 
-  it('kicks off a new dispatch cycle if the action is a function that returns a FSA action with a function payload', () => {
-    return dispatchWithAction(actionCreator)
+  it('kicks off a new dispatch cycle if the action is a function that returns a FSA action with a function payload', () => (
+    dispatchWithAction(actionCreator)
       .then(() => {
         expect(nextMiddlewareSpy.called).to.be.false;
-      });
-  });
+      })
+  ));
 
   it('dispatches the action to the next middleware if the action payload is not a function', () => {
-    dispatchWithAction({type: actionType, payload: actionType})
+    dispatchWithAction({ type: actionType, payload: actionType });
     expect(nextMiddlewareSpy.called).to.be.true;
   });
 
   it('dispatches the action to the next middleware if the action is not a FSA action', () => {
-    dispatchWithAction({type: actionType, data: payload})
+    dispatchWithAction({ type: actionType, data: payload });
     expect(nextMiddlewareSpy.called).to.be.true;
   });
 });

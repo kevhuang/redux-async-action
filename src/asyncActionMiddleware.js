@@ -12,13 +12,12 @@ const debug = Debug('redux-async-action:asyncActionMiddleware');
  *                    for either calling `asyncActionCreator()` to dispatch the async actions
  *                    or for calling `next(action)`
  */
-export default ({ dispatch }) => next => actionCreator => {
+export default ({ dispatch }) => next => (actionCreator) => {
   const action = isFunction(actionCreator) ? actionCreator() : actionCreator;
   if (isFSA(action) && isString(action.type) && isFunction(action.payload)) {
     debug('dispatching async actions', action);
     return asyncActionCreator(dispatch, action.type, action.payload, action.meta);
-  } else {
-    debug('incompatible action for middleware, no-op', action);
-    return next(action);
   }
+  debug('incompatible action for middleware, no-op', action);
+  return next(action);
 };
